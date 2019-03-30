@@ -1,9 +1,20 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const wheelEvent = 'wheel';
-const pluginName = 'tinyscrollbar';
-const touchLabel = Symbol(pluginName + 'Touch');
-const defaults = {
+var wheelEvent = 'wheel';
+var pluginName = 'tinyscrollbar';
+var touchLabel = Symbol(pluginName + 'Touch');
+var defaults = {
     axis: 'y',
     wheel: true,
     wheelSpeed: 40,
@@ -13,8 +24,8 @@ const defaults = {
     thumbSize: false,
     thumbSizeMin: 20,
 };
-class Tinyscrollbar {
-    constructor($container, options) {
+var Tinyscrollbar = /** @class */ (function () {
+    function Tinyscrollbar($container, options) {
         this.$body = document.querySelectorAll('body')[0];
         this.mousePosition = 0;
         this.contentPosition = 0;
@@ -26,7 +37,7 @@ class Tinyscrollbar {
         this.thumbSize = 0;
         this.thumbPosition = 0;
         this.hasContentToScroll = false;
-        this.options = Object.assign({}, defaults, options);
+        this.options = __assign({}, defaults, options);
         this.$container = $container;
         this.$viewport = $container.querySelectorAll('.viewport')[0];
         this.$overview = $container.querySelectorAll('.overview')[0];
@@ -42,11 +53,12 @@ class Tinyscrollbar {
         this.update();
         this.setEvents();
     }
-    update(scrollTo = 0) {
-        const sizeLabelCap = this.sizeLabel.charAt(0).toUpperCase() + this.sizeLabel.slice(1).toLowerCase();
-        const scrcls = this.$scrollbar.className;
-        const trackSize = Number(this.options.trackSize);
-        const thumbSizeMax = Math.max(this.options.thumbSizeMin, (trackSize || (this.trackSize * this.contentRatio)));
+    Tinyscrollbar.prototype.update = function (scrollTo) {
+        if (scrollTo === void 0) { scrollTo = 0; }
+        var sizeLabelCap = this.sizeLabel.charAt(0).toUpperCase() + this.sizeLabel.slice(1).toLowerCase();
+        var scrcls = this.$scrollbar.className;
+        var trackSize = Number(this.options.trackSize);
+        var thumbSizeMax = Math.max(this.options.thumbSizeMin, (trackSize || (this.trackSize * this.contentRatio)));
         this.viewportSize = this.$viewport['offset' + sizeLabelCap];
         this.contentSize = this.$overview['scroll' + sizeLabelCap];
         this.contentRatio = this.viewportSize / this.contentSize;
@@ -62,7 +74,7 @@ class Tinyscrollbar {
                 this.contentPosition = Math.max(this.contentSize - this.viewportSize, 0);
                 break;
             case 'relative':
-                const max = Math.max(this.contentSize - this.viewportSize, 0);
+                var max = Math.max(this.contentSize - this.viewportSize, 0);
                 this.contentPosition = Math.min(max, Math.max(0, this.contentPosition));
                 break;
             default:
@@ -70,118 +82,124 @@ class Tinyscrollbar {
         }
         this.thumbPosition = this.contentPosition / this.trackRatio;
         this.setCss();
-    }
-    setStyleAttribute(element, attrs) {
+    };
+    Tinyscrollbar.prototype.setStyleAttribute = function (element, attrs) {
         if (attrs !== undefined) {
-            Object.keys(attrs).forEach((key) => {
+            Object.keys(attrs).forEach(function (key) {
                 element.style.setProperty(key, attrs[key]);
             });
         }
-    }
-    setCss() {
-        this.setStyleAttribute(this.$thumb, { [this.posiLabel]: this.thumbPosition + 'px' });
-        this.setStyleAttribute(this.$overview, { [this.posiLabel]: this.contentPosition + 'px' });
-        this.setStyleAttribute(this.$scrollbar, { [this.sizeLabel]: this.trackSize + 'px' });
-        this.setStyleAttribute(this.$track, { [this.sizeLabel]: this.trackSize + 'px' });
-        this.setStyleAttribute(this.$thumb, { [this.sizeLabel]: this.thumbSize + 'px' });
-    }
-    setEvents() {
+    };
+    Tinyscrollbar.prototype.setCss = function () {
+        var _a, _b, _c, _d, _e;
+        this.setStyleAttribute(this.$thumb, (_a = {}, _a[this.posiLabel] = this.thumbPosition + 'px', _a));
+        this.setStyleAttribute(this.$overview, (_b = {}, _b[this.posiLabel] = this.contentPosition + 'px', _b));
+        this.setStyleAttribute(this.$scrollbar, (_c = {}, _c[this.sizeLabel] = this.trackSize + 'px', _c));
+        this.setStyleAttribute(this.$track, (_d = {}, _d[this.sizeLabel] = this.trackSize + 'px', _d));
+        this.setStyleAttribute(this.$thumb, (_e = {}, _e[this.sizeLabel] = this.thumbSize + 'px', _e));
+    };
+    Tinyscrollbar.prototype.setEvents = function () {
+        var _this = this;
         if (this.hasTouchEvents) {
-            this.$viewport.ontouchstart = (event) => {
+            this.$viewport.ontouchstart = function (event) {
                 if (1 === event.touches.length) {
-                    const touch = event.touches[0];
-                    this.start(touch, false);
+                    var touch = event.touches[0];
+                    _this.start(touch, false);
                     event.stopPropagation();
                 }
             };
         }
-        this.$thumb.onmousedown = (event) => {
+        this.$thumb.onmousedown = function (event) {
             event.stopPropagation();
-            this.start(event, false);
+            _this.start(event, false);
         };
-        this.$track.onmousedown = (event) => {
-            this.start(event, true);
+        this.$track.onmousedown = function (event) {
+            _this.start(event, true);
         };
-        window.addEventListener('resize', () => {
-            this.update('relative');
+        window.addEventListener('resize', function () {
+            _this.update('relative');
         }, true);
-        this.$container.addEventListener(wheelEvent, ((ev) => {
-            this.wheel(ev);
+        this.$container.addEventListener(wheelEvent, (function (ev) {
+            _this.wheel(ev);
         }), false);
         this.update('relative');
-    }
-    isAtBegin() {
+    };
+    Tinyscrollbar.prototype.isAtBegin = function () {
         return this.contentPosition > 0;
-    }
-    isAtEnd() {
+    };
+    Tinyscrollbar.prototype.isAtEnd = function () {
         return this.contentPosition <= (this.contentSize - this.viewportSize) - 5;
-    }
-    start(event, gotoMouse) {
+    };
+    Tinyscrollbar.prototype.start = function (event, gotoMouse) {
+        var _this = this;
         if (!this.hasContentToScroll) {
             return;
         }
-        const posiLabel = this.posiLabel;
+        var posiLabel = this.posiLabel;
         this.mousePosition = gotoMouse
             ? this.$thumb.getBoundingClientRect()[posiLabel]
             : (this.isHorizontal ? event.clientX : event.clientY);
         this.$body.className += ' noSelect';
         if (this.hasTouchEvents) {
-            document.ontouchmove = (ev) => {
-                if (this.options.touchLock || this.isAtBegin() && this.isAtEnd()) {
+            document.ontouchmove = function (ev) {
+                if (_this.options.touchLock || _this.isAtBegin() && _this.isAtEnd()) {
                     ev.preventDefault();
                 }
-                const touch = ev.touches[0];
+                var touch = ev.touches[0];
                 touch[touchLabel] = 1;
-                this.drag(touch);
-                document.ontouchend = this.end.bind(this);
+                _this.drag(touch);
+                document.ontouchend = _this.end.bind(_this);
             };
         }
         document.onmouseup = this.$thumb.onmouseup = this.end.bind(this);
-        document.onmousemove = (ev) => {
-            this.drag(ev);
+        document.onmousemove = function (ev) {
+            _this.drag(ev);
         };
         this.drag(event);
-    }
-    wheel(event) {
+    };
+    Tinyscrollbar.prototype.wheel = function (event) {
+        var _a, _b;
         if (!this.hasContentToScroll) {
             return;
         }
-        const evntObj = event || window.event;
-        const wheelSpeedDelta = -(evntObj.deltaY || evntObj.detail || (-1 / 3 * evntObj.wheelDelta)) / 40;
+        var evntObj = event || window.event;
+        var wheelSpeedDelta = -(evntObj.deltaY || evntObj.detail || (-1 / 3 * evntObj.wheelDelta)) / 40;
         this.contentPosition -= wheelSpeedDelta * this.options.wheelSpeed;
         this.contentPosition = Math.min((this.contentSize - this.viewportSize), Math.max(0, this.contentPosition));
         this.thumbPosition = this.contentPosition / this.trackRatio;
         this.$container.dispatchEvent(this.moveEvent);
-        this.setStyleAttribute(this.$thumb, { [this.posiLabel]: this.thumbPosition + 'px' });
-        this.setStyleAttribute(this.$overview, { [this.posiLabel]: -this.contentPosition + 'px' });
+        this.setStyleAttribute(this.$thumb, (_a = {}, _a[this.posiLabel] = this.thumbPosition + 'px', _a));
+        this.setStyleAttribute(this.$overview, (_b = {}, _b[this.posiLabel] = -this.contentPosition + 'px', _b));
         if (this.options.wheelLock || this.isAtBegin() && this.isAtEnd()) {
             evntObj.preventDefault();
         }
         event.stopPropagation();
-    }
-    drag(event) {
+    };
+    Tinyscrollbar.prototype.drag = function (event) {
+        var _a, _b;
         if (!this.hasContentToScroll) {
             return;
         }
-        const mousePositionNew = this.isHorizontal ? event.clientX : event.clientY;
-        const thumbPositionDelta = event[touchLabel]
+        var mousePositionNew = this.isHorizontal ? event.clientX : event.clientY;
+        var thumbPositionDelta = event[touchLabel]
             ? (this.mousePosition - mousePositionNew)
             : (mousePositionNew - this.mousePosition);
-        const max = Math.max(0, this.thumbPosition + thumbPositionDelta);
-        const thumbPositionNew = Math.min((this.trackSize - this.thumbSize), max);
+        var max = Math.max(0, this.thumbPosition + thumbPositionDelta);
+        var thumbPositionNew = Math.min((this.trackSize - this.thumbSize), max);
         this.contentPosition = thumbPositionNew * this.trackRatio;
         this.$container.dispatchEvent(this.moveEvent);
-        this.setStyleAttribute(this.$thumb, { [this.posiLabel]: thumbPositionNew + 'px' });
-        this.setStyleAttribute(this.$overview, { [this.posiLabel]: -this.contentPosition + 'px' });
-    }
-    end() {
-        const posiLabel = this.posiLabel;
+        this.setStyleAttribute(this.$thumb, (_a = {}, _a[this.posiLabel] = thumbPositionNew + 'px', _a));
+        this.setStyleAttribute(this.$overview, (_b = {}, _b[this.posiLabel] = -this.contentPosition + 'px', _b));
+    };
+    Tinyscrollbar.prototype.end = function () {
+        var posiLabel = this.posiLabel;
         this.thumbPosition = parseInt(this.$thumb.style[posiLabel], 10) || 0;
         this.$body.className = this.$body.className.replace(' noSelect', '');
         this.$thumb.onmouseup = null;
         this.$track.onmouseup = null;
         document.ontouchmove = document.ontouchend = null;
         document.onmousemove = document.onmouseup = null;
-    }
-}
+    };
+    return Tinyscrollbar;
+}());
 exports.default = Tinyscrollbar;
